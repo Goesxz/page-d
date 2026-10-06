@@ -147,14 +147,45 @@ h2 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.1rem clamp(1.25rem, 5vw, 5rem);
+    padding: 1.3rem clamp(1.25rem, 5vw, 5rem);
     transition:
-        background 0.4s,
-        backdrop-filter 0.4s;
+        padding 0.4s var(--ease),
+        transform 0.5s var(--ease);
 }
-.nav.solid {
+/* fundo + blur em pseudo-elemento: não prende o menu mobile (position: fixed) */
+.nav::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
     background: rgba(21, 19, 19, 0.82);
     backdrop-filter: blur(14px);
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+.nav.solid {
+    padding-block: 0.7rem;
+}
+.nav.solid::before {
+    opacity: 1;
+}
+.nav.away:not(:focus-within) {
+    transform: translateY(-100%);
+}
+.nav-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+.nav.solid .nav-progress {
+    opacity: 1;
 }
 .brand {
     font-family: var(--display);
@@ -167,12 +198,12 @@ h2 {
     align-items: center;
     gap: 2rem;
 }
-.menu a:not(.btn) {
+.menu > a:not(.btn) {
     font-size: 0.85rem;
     position: relative;
     padding: 0.3rem 0;
 }
-.menu a:not(.btn)::after {
+.menu > a:not(.btn)::after {
     content: "";
     position: absolute;
     left: 0;
@@ -184,9 +215,20 @@ h2 {
     transform-origin: left;
     transition: transform 0.35s var(--ease);
 }
-.menu a:not(.btn):hover::after,
-.menu a[aria-current]::after {
+.menu > a:not(.btn):hover::after,
+.menu > a[aria-current]::after {
     transform: scaleX(1);
+}
+.menu .btn {
+    gap: 0.6rem;
+    padding: 0.75rem 1.25rem;
+}
+.menu-cta-icon {
+    width: 1.05rem;
+    height: 1.05rem;
+}
+.menu-foot {
+    display: none;
 }
 .burger {
     display: none;
@@ -618,7 +660,7 @@ h2 {
     font-size: 2rem;
 }
 
-/* player + footer */
+/* player */
 .player {
     position: fixed;
     inset: auto 0 0;
@@ -669,36 +711,137 @@ h2 {
     min-width: 0;
 }
 
+/* footer */
 .footer {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 2rem;
-    padding: 4rem clamp(1.25rem, 5vw, 5rem) 6rem;
+    position: relative;
+    isolation: isolate;
+    padding: clamp(2rem, 4vw, 3rem) clamp(1.25rem, 5vw, 5rem) 6rem;
     border-top: 1px solid rgba(200, 166, 106, 0.35);
+    background:
+        radial-gradient(
+            60% 120% at 0% 100%,
+            rgba(90, 16, 32, 0.55),
+            transparent 70%
+        ),
+        var(--coal);
 }
-.footer strong {
-    font-family: var(--display);
-    font-size: 1.6rem;
-    font-weight: 400;
-}
-.footer p {
-    opacity: 0.7;
-}
-.footer nav {
+.footer-top {
     display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem 2.5rem;
 }
-.footer nav a {
+.footer-name {
+    display: block;
+    font-family: var(--display);
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+}
+.footer-tagline {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
     opacity: 0.75;
 }
-.footer nav a:hover {
-    opacity: 1;
-    color: var(--gold);
+
+/* navegação em linha, com o mesmo underline dourado do menu */
+.footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 1.75rem;
 }
-.footer small {
-    grid-column: 1/-1;
-    opacity: 0.6;
+.footer-nav a {
+    position: relative;
+    padding: 0.3rem 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+.footer-nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s var(--ease);
+}
+.footer-nav a:hover,
+.footer-nav a:focus-visible {
+    opacity: 1;
+}
+.footer-nav a:hover::after,
+.footer-nav a:focus-visible::after {
+    transform: scaleX(1);
+}
+
+/* ícones + CTA na mesma linha */
+.footer-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.25rem;
+}
+.footer-social {
+    display: flex;
+    gap: 0.6rem;
+}
+.footer-cta {
+    gap: 0.6rem;
+    padding: 0.8rem 1.3rem;
+}
+.footer-cta-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+.footer-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid rgba(244, 239, 231, 0.25);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition:
+        background 0.3s var(--ease),
+        border-color 0.3s var(--ease),
+        transform 0.3s var(--ease);
+}
+.footer-icon-svg {
+    width: 20px;
+    height: 20px;
+    flex: none;
+}
+.footer-icon:hover,
+.footer-icon:focus-visible {
+    background: var(--burn);
+    border-color: var(--gold);
+    transform: translateY(-3px);
+}
+
+/* linha dourada fina + copyright */
+.footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid rgba(200, 166, 106, 0.25);
+}
+.footer-bottom small {
+    opacity: 0.7;
 }
 
 /* responsive */
@@ -727,10 +870,17 @@ h2 {
     .menu {
         position: fixed;
         inset: 0;
-        background: var(--coal);
+        background:
+            radial-gradient(
+                70% 50% at 100% 100%,
+                rgba(90, 16, 32, 0.7),
+                transparent
+            ),
+            var(--coal);
         flex-direction: column;
         justify-content: center;
-        gap: 1.6rem;
+        gap: 1.4rem;
+        counter-reset: m;
         clip-path: circle(0 at calc(100% - 2.5rem) 2.2rem);
         transition: clip-path 0.7s var(--ease);
         visibility: hidden;
@@ -739,10 +889,52 @@ h2 {
         clip-path: circle(150% at calc(100% - 2.5rem) 2.2rem);
         visibility: visible;
     }
-    .menu a:not(.btn) {
+    .menu > a:not(.btn) {
         font-family: var(--display);
         font-size: 2.4rem;
         text-transform: uppercase;
+        counter-increment: m;
+    }
+    .menu > a:not(.btn)::before {
+        content: "0" counter(m);
+        font-family: var(--body);
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        color: var(--gold);
+        margin-right: 0.9rem;
+        vertical-align: middle;
+    }
+    .menu .btn {
+        margin-top: 0.6rem;
+    }
+    .menu.open > * {
+        animation: up 0.6s calc(0.25s + var(--i, 0) * 0.07s) both;
+    }
+    .menu-foot {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+    .menu-foot a {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border: 1px solid rgba(244, 239, 231, 0.25);
+        border-radius: 50%;
+        font-size: 0.7rem;
+        transition:
+            background 0.3s var(--ease),
+            border-color 0.3s var(--ease);
+    }
+    .menu-foot a:hover,
+    .menu-foot a:focus-visible {
+        background: var(--burn);
+        border-color: var(--gold);
+    }
+    .menu-foot-icon {
+        width: 20px;
+        height: 20px;
     }
 
     .hero {
@@ -790,6 +982,12 @@ h2 {
         font-size: 0.7rem;
         letter-spacing: 0.12em;
     }
+
+    .footer-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+    }
 }
 
 @media (max-width: 600px) {
@@ -809,9 +1007,6 @@ h2 {
     }
     .dates li .btn {
         grid-column: 1/-1;
-    }
-    .footer {
-        grid-template-columns: 1fr;
     }
     .pinfo {
         flex-basis: 7rem;
