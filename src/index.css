@@ -749,19 +749,46 @@ h2 {
         align-items: flex-end;
     }
     .hero-img {
+        top: 3.5rem;
         width: 100%;
-        height: 78%;
-        object-position: 50% 8%;
-        -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
-        mask-image: linear-gradient(180deg, #000 55%, transparent);
+        height: 62svh;
+        object-position: 50% 30%;
+        filter: grayscale(0.15) brightness(0.85) contrast(1.2) saturate(0.95);
+        -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent);
+        mask-image: linear-gradient(180deg, #000 60%, transparent);
+    }
+    .hero-photo::after {
+        background: radial-gradient(
+            80% 60% at 60% 30%,
+            rgba(143, 38, 53, 0.3),
+            rgba(90, 16, 32, 0.55)
+        );
     }
     .hero-shade {
         background: linear-gradient(
             0deg,
-            var(--coal) 18%,
-            rgba(21, 19, 19, 0.6) 55%,
-            rgba(90, 16, 32, 0.3)
+            var(--coal) 25%,
+            rgba(21, 19, 19, 0.35) 55%,
+            transparent 80%
         );
+    }
+    .hero-body {
+        padding-top: 54svh;
+    }
+    .ctas {
+        gap: 0.7rem;
+    }
+    .ctas .btn {
+        flex: 1 1 100%;
+        padding: 0.9rem 1rem;
+        white-space: nowrap;
+    }
+    .socials {
+        justify-content: space-between;
+        gap: 0;
+        margin-top: 1.6rem;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
     }
 }
 
@@ -792,9 +819,6 @@ h2 {
     .player input,
     .player .time {
         display: none;
-    }
-    .ctas .btn {
-        flex: 1;
     }
 }
 
