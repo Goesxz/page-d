@@ -7,4 +7,4 @@ export const social = [
   { label: 'TikTok', url: '#' },
 ]
 // Fotos: coloque os arquivos em public/images e informe o caminho (ex: '/images/hero.jpg')
-export const images = { hero: '/images/hero.jpg', about: '/images/about.jpg' }
+export const images = { hero: '/images/hero.jpg', about: '/images/about.jpeg' }

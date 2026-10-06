@@ -1,27 +1,69 @@
 import { useEffect, useRef } from 'react'
-import { artist, images, social } from '../data/site'
+import { images, artist, social } from '../data/site'
+
 export default function Hero() {
-  const img = useRef<HTMLDivElement>(null)
+  const photo = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    let mx = 0, my = 0, raf = 0
-    const tick = () => { raf = 0; if (img.current) img.current.style.transform = `translate3d(${mx}px,${scrollY * 0.12 + my}px,0)` }
-    const req = () => { raf ||= requestAnimationFrame(tick) }
-    const mm = (e: MouseEvent) => { mx = (e.clientX / innerWidth - 0.5) * -14; my = (e.clientY / innerHeight - 0.5) * -10; req() }
-    addEventListener('scroll', req, { passive: true }); addEventListener('mousemove', mm)
-    return () => { removeEventListener('scroll', req); removeEventListener('mousemove', mm) }
+    let y = 0, mx = 0, my = 0, raf = 0
+
+    const draw = () => {
+      raf = 0
+      if (photo.current)
+        photo.current.style.transform =
+          `translate3d(${mx * -14}px, ${y * 0.15 + my * -10}px, 0)`
+    }
+    const queue = () => { if (!raf) raf = requestAnimationFrame(draw) }
+
+    const onScroll = () => { y = Math.min(scrollY, innerHeight); queue() }
+    const onMove = (e: MouseEvent) => {
+      mx = e.clientX / innerWidth - 0.5
+      my = e.clientY / innerHeight - 0.5
+      queue()
+    }
+
+    addEventListener('scroll', onScroll, { passive: true })
+    addEventListener('mousemove', onMove, { passive: true })
+    return () => {
+      removeEventListener('scroll', onScroll)
+      removeEventListener('mousemove', onMove)
+      cancelAnimationFrame(raf)
+    }
   }, [])
+
   return (
     <section id="inicio" className="hero">
-      <div className="hero-photo"><div ref={img} className="hero-img" style={{ backgroundImage: `url(${images.hero})` }} role="img" aria-label={`Foto de ${artist.name} no palco`} /></div>
-      <div className="hero-shade" /><div className="grain" />
+      <div className="hero-photo" ref={photo} aria-hidden="true">
+  <img
+    className="hero-img"
+    src={images.hero}
+    alt=""
+    fetchPriority="high"
+    decoding="async"
+  />
+</div>
+      <div className="hero-shade" />
+      <div className="grain" />
+
       <div className="hero-body">
         <p className="label a4">Artista • Pagode</p>
-        <h1 className="name"><span className="mask"><span>{artist.name}</span></span></h1>
-        <p className="headline a5">MÚSICA QUE<br />VIRA HISTÓRIA.</p>
+        <h1 className="name">
+          <span className="mask"><span>{artist.name}</span></span>
+        </h1>
+        <p className="headline a5">Música que<br />vira história.</p>
         <p className="lead a6">Canções para cantar, sentir e lembrar.</p>
-        <div className="ctas a7"><a className="btn btn-solid" href="#musica">Ouvir agora</a><a className="btn btn-line" href="#sobre">Conhecer o artista</a></div>
-        <ul className="socials a8">{social.map(s => <li key={s.label}><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a></li>)}</ul>
+        <div className="ctas a7">
+          <a className="btn btn-solid" href="#musicas">Ouvir agora</a>
+          <a className="btn btn-line" href="#sobre">Conhecer o artista</a>
+        </div>
+        <nav className="socials a8" aria-label="Redes sociais">
+          {social.map(s => (
+            <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer">
+              {s.label}
+            </a>
+          ))}
+        </nav>
       </div>
     </section>
   )
