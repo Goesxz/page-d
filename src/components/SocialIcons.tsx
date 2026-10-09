@@ -1,5 +1,7 @@
+import type { ReactElement } from 'react'
+
 export type IconProps = { className?: string }
-export type IconComponent = (props: IconProps) => JSX.Element
+export type IconComponent = (props: IconProps) => ReactElement
 
 const WhatsApp: IconComponent = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
@@ -29,3 +31,7 @@ const Facebook: IconComponent = ({ className }) => (
 )
 
 export const SocialIcons = { WhatsApp, Instagram, TikTok, Facebook }
+
+/** Busca o ícone pelo label vindo de `social`; retorna undefined se não existir (o link mostra o texto). */
+export const iconFor = (label: string): IconComponent | undefined =>
+  (SocialIcons as Record<string, IconComponent | undefined>)[label]
